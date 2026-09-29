@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UD4YxCLIPBOARD</title>
+<meta name="description" content="Pocket board for short notes and links. Everything stays on your device.">
+<meta name="theme-color" content="#0b4f4a">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Familjen+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b4f4a;--glow:#15867f;--dot:rgba(255,255,255,.09);--fg:#fff1cf;--accent:#ffc233;--pink:#ff4f8b;--paper:#fffef9;--ink:#10201e;--hard:#031513;--cb:#ffc233;--cf:#10201e;
+--c1:#ffc233;--c2:#8fd8ff;--c3:#ff9dc0;--c4:#a6f0c6}
+:root[data-theme=day]{--bg:#ffc233;--glow:#ffe58f;--dot:rgba(16,32,30,.14);--fg:#10201e;--accent:#10201e;--pink:#e2296e;--hard:#10201e;--cb:#10201e;--cf:#fffef9;--c1:#fff09a}
+*{box-sizing:border-box;margin:0}
+body{min-height:100vh;min-height:100dvh;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;color:var(--fg);font:400 16px/1.5 "Familjen Grotesk",system-ui,sans-serif;
+background:radial-gradient(circle at 1px 1px,var(--dot) 1.3px,transparent 1.8px) 0 0/22px 22px,radial-gradient(110% 70% at 85% -10%,var(--glow),transparent 62%),var(--bg);
+background-attachment:fixed;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);transition:background-color .4s}
+button,input,textarea{font:inherit;color:inherit}button{cursor:pointer;border:0;background:none;touch-action:manipulation}
+:focus-visible{outline:3px solid var(--pink);outline-offset:2px;border-radius:8px}
+.wrap{max-width:1120px;margin:0 auto;padding:14px 18px 90px}
+.hbtns{display:flex;justify-content:flex-end;gap:4px;margin-bottom:8px}
+.ib{padding:5px 13px;border-radius:99px;font-weight:500;font-size:14px;border:2px solid transparent;transition:.15s}.ib:hover{border-color:var(--fg)}
+.logo{font:400 clamp(30px,9.4vw,96px)/.95 "Bagel Fat One","Arial Rounded MT Bold",system-ui,sans-serif;color:var(--accent);text-shadow:4px 4px 0 var(--pink),8px 8px 0 var(--hard)}
+.logo span{display:inline-block;transform:rotate(-8deg);margin:0 .04em}
+.tag{margin-top:20px;font-size:clamp(17px,2.6vw,20px);font-weight:500;max-width:42ch}
+.cap{background:var(--paper);color:var(--ink);border:2.5px solid var(--ink);border-radius:8px 22px 8px 22px;box-shadow:7px 7px 0 var(--hard);padding:14px;margin:28px 7px 28px 2px}
+.cap textarea{width:100%;border:0;background:none;resize:none;outline:none;font:500 19px/1.5 "Familjen Grotesk",sans-serif;min-height:56px;max-height:220px;padding:4px 6px}
+.cap textarea::placeholder{color:#7a8886}
+.caprow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px}
+.hint{color:#5c6b69;font-size:13.5px;padding-left:6px}
+.btn{background:var(--pink);color:#fff;padding:9px 20px;border:2.5px solid var(--ink);border-radius:99px;font-weight:600;box-shadow:3px 3px 0 var(--ink);transition:.1s}
+.btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+.btn.ghost{background:var(--paper);color:var(--ink);margin-right:8px}
+.bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:26px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:6px 15px;border-radius:99px;border:2px solid var(--fg);font-weight:600;font-size:14.5px;transition:.15s}
+.chip.on{background:var(--cb);color:var(--cf);border-color:var(--cb)}
+.chip:not(.on):hover{background:rgba(255,255,255,.14)}
+.search{flex:1;min-width:150px;background:var(--paper);color:var(--ink);border:2.5px solid var(--ink);border-radius:99px;padding:7px 16px;box-shadow:3px 3px 0 var(--hard);outline-offset:3px}
+.board{columns:3 290px;column-gap:22px}
+.card{break-inside:avoid;position:relative;background:var(--paper);color:var(--ink);border:2.5px solid var(--ink);border-radius:8px 18px 8px 18px;box-shadow:5px 5px 0 var(--hard);
+padding:24px 16px 10px;margin:0 7px 24px 2px;transform:rotate(var(--r,0deg));transition:transform .2s,box-shadow .2s}
+.card:hover,.card.editing{transform:rotate(0) translateY(-3px);box-shadow:8px 8px 0 var(--hard)}
+.card::before{content:"";position:absolute;top:7px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--bg);border:2px solid var(--ink)}
+.card[data-c="1"]{background:var(--c1)}.card[data-c="2"]{background:var(--c2)}.card[data-c="3"]{background:var(--c3)}.card[data-c="4"]{background:var(--c4)}
+@keyframes rise{from{opacity:0;transform:translateY(40px) rotate(calc(var(--r)*5))}}
+@keyframes stamp{from{opacity:0;transform:scale(1.3) rotate(-5deg)}}
+.board.boot .card{animation:rise .65s cubic-bezier(.2,.9,.3,1.15) backwards;animation-delay:calc(var(--i)*80ms)}
+.card.fresh{animation:stamp .4s cubic-bezier(.2,.9,.3,1.3) backwards}
+.txt{white-space:pre-wrap;word-break:break-word;font-size:16.5px;line-height:1.55}
+.txt.clip:not(.open){max-height:14em;overflow:hidden;cursor:pointer;-webkit-mask-image:linear-gradient(#000 72%,transparent);mask-image:linear-gradient(#000 72%,transparent)}
+.txt a{color:#c4175f;font-weight:600;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;border-radius:3px}
+.txt a:hover{background:var(--c1);color:var(--ink)}
+.card[data-c] .txt a{color:inherit}
+.lk{display:flex;gap:12px;align-items:center;text-decoration:none;color:inherit}
+.lk img{width:34px;height:34px;flex:none;border:2px solid var(--ink);border-radius:9px;background:#fff;padding:3px}
+.lk h3{font:400 20px/1.15 "Bagel Fat One",system-ui,sans-serif}
+.lk p{font-size:12.5px;opacity:.65;word-break:break-all;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lk:hover h3{text-decoration:underline;text-decoration-thickness:2px}
+.meta{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:8px;border-top:2px dashed rgba(16,32,30,.28);font-size:12.5px;font-weight:500;color:rgba(16,32,30,.65)}
+.acts{display:flex;gap:2px;opacity:0;transition:.15s}
+.card:hover .acts,.card:focus-within .acts{opacity:1}
+@media(hover:none){.acts{opacity:1}}
+.acts button{padding:3px 8px;border-radius:99px;font-size:12.5px;font-weight:600;color:var(--ink)}
+.acts button:hover{background:var(--ink);color:var(--paper)}
+.dotc{width:13px;height:13px;border-radius:50%;border:2.5px solid currentColor;display:inline-block;vertical-align:middle}
+.pinbadge{position:absolute;top:-15px;right:14px;font-size:21px;transform:rotate(14deg)}
+.edit{width:100%;border:2px solid var(--ink);border-radius:8px;background:rgba(255,255,255,.65);padding:8px;resize:vertical;min-height:90px;outline:none;font:500 16px/1.5 "Familjen Grotesk",sans-serif}
+.empty{column-span:all;text-align:center;border:2.5px dashed var(--fg);border-radius:20px;padding:46px 12px;font-weight:500}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,30px);opacity:0;pointer-events:none;background:var(--paper);color:var(--ink);border:2.5px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 var(--hard);padding:10px 16px;display:flex;gap:14px;font-weight:500;transition:.25s;z-index:9}
+.toast.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}.toast button{color:var(--pink);font-weight:600}
+.ht{font:inherit;font-weight:600;color:#0a6e63;background:rgba(16,32,30,.08);border-radius:99px;padding:0 8px;cursor:pointer}
+.ht:hover{background:var(--ink);color:var(--paper)}
+.chip.tg{border-style:dashed}.chip.tg.on{border-style:solid}
+.fab{position:fixed;right:20px;bottom:24px;width:56px;height:56px;border-radius:50%;background:var(--pink);color:#fff;font:400 32px/1 "Bagel Fat One",sans-serif;border:2.5px solid var(--ink);box-shadow:4px 4px 0 var(--hard);transform:scale(0);transition:transform .25s cubic-bezier(.2,.9,.3,1.4);z-index:8}
+.fab.show{transform:scale(1)}.fab:active{transform:translate(3px,3px);box-shadow:none}
+.foot{margin-top:46px;padding-top:18px;border-top:2px dashed var(--fg);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.love{font:400 21px/1.2 "Bagel Fat One",system-ui,sans-serif}
+.heart{display:inline-block;color:var(--pink);animation:beat 1.6s infinite}
+@keyframes beat{0%,60%,100%{transform:scale(1)}20%{transform:scale(1.28)}40%{transform:scale(1.1)}}
+.cr{font-size:13.5px;opacity:.85;margin-top:4px}
+.foot nav{display:flex;gap:6px;flex-wrap:wrap}
+.foot nav button{padding:7px 14px;border-radius:99px;font-weight:600;font-size:14px;border:2px solid transparent}.foot nav button:hover{border-color:var(--fg)}
+dialog{border:2.5px solid var(--ink);border-radius:10px 22px 10px 22px;background:var(--paper);color:var(--ink);box-shadow:8px 8px 0 var(--hard);padding:0;width:min(640px,calc(100% - 24px));max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);margin:auto;overflow:hidden}
+dialog::backdrop{background:rgba(3,21,19,.62);backdrop-filter:blur(3px)}
+dialog[open]{display:flex;flex-direction:column;animation:stamp .3s cubic-bezier(.2,.9,.3,1.3)}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:2.5px solid var(--ink);background:var(--c1)}
+.dh h2{font:400 24px/1.1 "Bagel Fat One",system-ui,sans-serif}
+.dh button{width:38px;height:38px;flex:none;border:2.5px solid var(--ink);border-radius:50%;font-weight:700;background:var(--paper)}
+#db{padding:8px 20px 24px;overflow:auto;font-size:15.5px;line-height:1.6}
+#db h3{font:600 17px/1.3 "Familjen Grotesk",sans-serif;margin:18px 0 3px}
+#db p,#db li{margin:4px 0}#db ul{padding-left:20px}
+.sc{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:10px 0;border-bottom:2px dashed rgba(16,32,30,.2)}
+.sc span:last-child{text-align:right}
+kbd{font:600 13px "Familjen Grotesk",sans-serif;background:var(--c1);border:2px solid var(--ink);border-radius:7px;padding:1px 8px;box-shadow:2px 2px 0 var(--ink);white-space:nowrap}
+.upd{opacity:.65;font-size:13.5px;margin-top:10px}
+@media(max-width:900px){.wrap{padding-left:16px;padding-right:16px}}
+@media(max-width:640px){
+.wrap{padding:10px 14px 110px}
+.hbtns{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;margin:0 -14px 10px;padding:0 14px;scrollbar-width:none}.hbtns::-webkit-scrollbar,.chips::-webkit-scrollbar{display:none}
+.ib{white-space:nowrap;padding:9px 14px}.desk{display:none}
+.logo{text-shadow:3px 3px 0 var(--pink),5px 5px 0 var(--hard)}
+.tag{margin-top:16px}
+.cap{margin:20px 5px 22px 0;padding:12px}
+.hint{display:none}.caprow{justify-content:stretch}
+.caprow>span:last-child{display:flex;width:100%;gap:10px}.btn{flex:1;padding:12px}.btn.ghost{margin:0}
+.bar{flex-direction:column;align-items:stretch;gap:12px;margin-bottom:22px}
+.chips{flex-wrap:nowrap;overflow-x:auto;margin:0 -14px;padding:2px 14px 6px;scrollbar-width:none}
+.chip{white-space:nowrap;flex:none;padding:8px 15px}
+.search{width:100%;padding:11px 16px}
+.board{columns:1}
+.card{margin:0 5px 22px 0;transform:rotate(calc(var(--r)*.5))}
+.acts button{padding:8px 10px;font-size:13.5px}
+.fab{right:16px;bottom:calc(18px + env(safe-area-inset-bottom))}
+.toast{width:calc(100% - 28px);justify-content:space-between;bottom:calc(84px + env(safe-area-inset-bottom))}
+.foot{flex-direction:column;align-items:flex-start;margin-top:36px}
+.foot nav button{padding:9px 14px}
+dialog{max-height:calc(100dvh - 24px);border-radius:10px 18px 10px 18px}
+.sc{flex-direction:column;align-items:flex-start;gap:6px}.sc span:last-child{text-align:left}
+}
+header{text-align:center}
+.hbtns{justify-content:center}
+.tag{margin-left:auto;margin-right:auto}
+.pillrow{margin-top:14px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border:2px solid var(--fg);border-radius:99px;font-size:14px;font-weight:600}
+.pill i{width:10px;height:10px;border-radius:50%;background:#3ee08f;box-shadow:0 0 0 3px rgba(62,224,143,.3)}
+.pill.bad i{background:#ff4f5e;box-shadow:0 0 0 3px rgba(255,79,94,.35)}
+.warn{max-width:760px;margin:20px auto 0;background:#ff4f5e;color:#fff;border:2.5px solid var(--ink);border-radius:14px;box-shadow:5px 5px 0 var(--hard);padding:12px 16px;font-weight:500;text-align:center}
+.cap{width:min(760px,calc(100% - 8px));margin:28px auto}
+.caprow{flex-direction:column;justify-content:center;gap:10px;text-align:center}
+.hint{padding:0}
+.bar{flex-direction:column;align-items:center;gap:14px}
+.chips{justify-content:center}
+.search{flex:none;width:min(100%,460px);text-align:center}
+.board{columns:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),340px));justify-content:center;align-items:start;gap:28px 26px}
+.card{margin:0;width:100%}
+.empty{grid-column:1/-1;justify-self:center;width:100%;max-width:520px}
+.txt.ctr{text-align:center}
+.lk{justify-content:center}.lk div{text-align:left}
+.meta{flex-direction:column;gap:4px;justify-content:center}
+.acts{justify-content:center;flex-wrap:wrap}
+.foot{flex-direction:column;align-items:center;text-align:center}
+.foot nav{justify-content:center}
+@media(max-width:640px){
+.hbtns{justify-content:flex-start}
+.chips{justify-content:flex-start}
+.board{grid-template-columns:1fr;gap:24px}
+.cap{width:calc(100% - 6px)}
+.caprow>span:last-child{width:100%}
+.foot{align-items:center}
+}
+.side{display:contents}
+.board{display:flex;columns:auto;grid-template-columns:none;gap:26px;align-items:flex-start;justify-content:center;width:100%}
+.col{flex:1 1 0;min-width:0;max-width:560px;display:flex;flex-direction:column;gap:28px}
+.board .empty{flex:1 1 100%;max-width:520px;margin:0 auto}
+.txt,.lk p,.lk h3{overflow-wrap:anywhere}
+@media(min-width:1000px){
+.wrap{max-width:2000px;display:grid;grid-template-columns:minmax(320px,380px) minmax(0,1fr);grid-template-areas:"side board" "foot foot";column-gap:44px;align-items:start;padding:26px clamp(20px,3vw,48px) 40px}
+.side{display:block;grid-area:side;position:sticky;top:18px;max-height:calc(100vh - 36px);max-height:calc(100dvh - 36px);overflow-y:auto;padding:4px 14px 26px 4px;margin:-4px 0 0 -4px;scrollbar-width:thin}
+.board{grid-area:board;justify-content:flex-start;padding-top:8px}
+.foot{grid-area:foot}
+.logo{font-size:clamp(28px,2.7vw,40px);text-shadow:3px 3px 0 var(--pink),5px 5px 0 var(--hard)}
+.tag{font-size:16px;margin-top:14px}
+.cap{width:100%;margin:22px 0}
+.search{width:100%}
+.fab{display:none}
+.hbtns{flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="side">
+<header>
+  <div class="hbtns">
+    <button class="ib" id="bk">Backup</button>
+    <button class="ib" id="rs">Restore</button>
+    <button class="ib desk" data-doc="shortcuts">Shortcuts</button>
+    <button class="ib" id="th">Day / Night</button>
+    <input type="file" id="file" accept=".json" hidden>
+  </div>
+  <h1 class="logo">UD4Y<span>×</span>CLIPBOARD</h1>
+  <p class="tag">Your pocket board for short notes and links. Paste anything, find it in a second.</p>
+<p class="pillrow"><span class="pill" id="pill"><i></i><span id="sv">Saved on this device</span></span></p>
+</header>
+<div class="warn" id="warn" role="alert" hidden>This page can't save notes here, so they will vanish when you refresh. Open your deployed GitHub Pages link (or open index.html directly from your computer). Until then, press Backup to keep your notes.</div>
+
+<section class="cap">
+  <textarea id="in" rows="2" placeholder="Type a quick note or paste a link…" aria-label="New note or link" autofocus></textarea>
+  <div class="caprow">
+    <span class="hint">Enter to save. Shift+Enter for a new line. Ctrl+V works anywhere on the page.</span>
+    <span><button class="btn ghost" id="pc">Paste clipboard</button><button class="btn" id="add">Save</button></span>
+  </div>
+</section>
+
+<div class="bar">
+  <div class="chips" id="chips"></div>
+  <input class="search" id="q" type="search" placeholder="Search (Ctrl+K)" aria-label="Search">
+</div>
+</div>
+<div class="board boot" id="board"></div>
+<footer class="foot">
+  <div><p class="love">Developed with <span class="heart" aria-label="love">♥</span> by UDAY</p><p class="cr">© 2026 UDAY. Your notes never leave your device.</p></div>
+  <nav aria-label="Legal and help"><button data-doc="shortcuts">Shortcuts</button><button data-doc="privacy">Privacy Policy</button><button data-doc="terms">Terms &amp; Conditions</button></nav>
+</footer>
+</div>
+<button class="fab" id="fab" aria-label="New note" title="New note (n)">+</button>
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="tm"></span><button id="ta">Undo</button></div>
+
+<dialog id="dlg" aria-labelledby="dt"><div class="dh"><h2 id="dt"></h2><button id="dx" aria-label="Close">✕</button></div><div id="db"></div></dialog>
+<script>
+const KEY='ud4yxclipboard.v2',$=id=>document.getElementById(id);
+let items=[],filter='all',query='',editing=null,undo=null,tt,fresh=null,tag='';
+try{items=JSON.parse(localStorage.getItem(KEY))||[]}catch{}
+if(!Array.isArray(items))items=[];items=items.filter(i=>i&&typeof i.text==='string'&&i.id);
+if(!items.length){try{const old=JSON.parse(localStorage.getItem('ud4yxclipboard.v1')||'[]');
+ items=old.map(n=>({id:n.id,text:[n.title,n.body].filter(Boolean).join('\n'),pin:n.pin,c:0,at:n.at}))}catch{}}
+let lsOK=true,idbOK=null;
+const idb=()=>new Promise((res,rej)=>{try{const r=indexedDB.open('ud4yxclipboard',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej()}catch(e){rej(e)}});
+const idbSet=v=>idb().then(d=>new Promise(res=>{const t=d.transaction('kv','readwrite');t.objectStore('kv').put(v,'items');t.oncomplete=()=>res(true);t.onerror=()=>res(false)})).catch(()=>false);
+const idbGet=()=>idb().then(d=>new Promise(res=>{const q=d.transaction('kv').objectStore('kv').get('items');q.onsuccess=()=>res(q.result);q.onerror=()=>res(null)})).catch(()=>null);
+function syncState(){const ok=lsOK||idbOK;$('warn').hidden=!!ok;$('pill').classList.toggle('bad',!ok);$('sv').textContent=ok?'Saved on this device':'Not saving on this page'}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(items));lsOK=true}catch{lsOK=false}idbSet(items).then(r=>{idbOK=r;syncState()});syncState()};
+try{localStorage.setItem(KEY+'.p','1');localStorage.removeItem(KEY+'.p')}catch{lsOK=false}
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch{}
+addEventListener('pagehide',()=>{try{localStorage.setItem(KEY,JSON.stringify(items))}catch{}});
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const URLRE=/(https?:\/\/[^\s<]+|\bwww\.[^\s<]+)/gi;
+const linkOnly=t=>/^(https?:\/\/|www\.)\S+$/i.test(t.trim());
+const full=u=>/^https?:/i.test(u)?u:'https://'+u;
+const hasLink=t=>/(https?:\/\/|\bwww\.)\S+/i.test(t);
+function linkify(t){return esc(t).replace(LINKTAG,(m,u,sp,h)=>{if(!u)return sp+`<button class="ht" data-tag="${h.toLowerCase()}">#${h}</button>`;m=u;let tail='';while(/[.,;:!?)\]]$/.test(m)){tail=m.slice(-1)+tail;m=m.slice(0,-1)}
+ return `<a href="${full(m)}" target="_blank" rel="noopener noreferrer">${m}</a>${tail}`})}
+function host(u){try{return new URL(full(u)).hostname.replace(/^www\./,'')}catch{return u}}
+const ago=ts=>{const s=(Date.now()-ts)/1e3;return s<60?'just now':s<3600?Math.floor(s/60)+' min ago':s<86400?Math.floor(s/3600)+' h ago':new Date(ts).toLocaleDateString(undefined,{day:'numeric',month:'short'})};
+
+const TAGRE=/(^|\s)#([\p{L}\d_-]{1,30})/gu,LINKTAG=/(https?:\/\/[^\s<]+|\bwww\.[^\s<]+)|(^|\s)#([\p{L}\d_-]{1,30})/giu;
+const tagsOf=t=>[...t.matchAll(TAGRE)].map(m=>m[2].toLowerCase());
+const dupe=t=>{const n=x=>x.trim().toLowerCase().replace(/\/+$/,'');return items.find(i=>n(i.text)===n(t))};
+function tagChips(){const c={};items.forEach(i=>new Set(tagsOf(i.text)).forEach(t=>c[t]=(c[t]||0)+1));
+ return Object.keys(c).sort((a,b)=>c[b]-c[a]).slice(0,12).map(t=>`<button class="chip tg ${tag===t?'on':''}" data-t="${t}">#${t} ${c[t]}</button>`).join('')}
+let lastNat=0;
+const natCols=()=>Math.max(1,Math.min(5,Math.floor((($('board').clientWidth||innerWidth)+26)/316)));
+const est=(r,w)=>{if(linkOnly(r.text))return 118;const cpl=Math.max(18,Math.floor(w/9.4));
+ const L=r.text.split('\n').reduce((a,l)=>a+Math.max(1,Math.ceil(l.length/cpl)),0);return 96+(r.text.length>420?Math.min(L,9):L)*26};
+function columnize(rows){lastNat=natCols();const cols=Math.min(lastNat,Math.max(1,rows.length)),w=($('board').clientWidth||innerWidth)/cols;
+ const B=Array.from({length:cols},()=>({h:0,html:''}));
+ rows.forEach((r,n)=>{const b=B.reduce((a,c)=>c.h<a.h?c:a);b.html+=card(r,n);b.h+=est(r,w)});
+ return B.map(b=>`<div class="col">${b.html}</div>`).join('')}
+function render(){
+  const cnt={all:items.length,notes:items.filter(i=>!hasLink(i.text)).length,links:items.filter(i=>hasLink(i.text)).length,pinned:items.filter(i=>i.pin).length};
+  $('chips').innerHTML=[['all','All'],['notes','Notes'],['links','Links'],['pinned','Pinned']].map(([k,l])=>`<button class="chip ${filter===k?'on':''}" data-f="${k}">${l} ${cnt[k]}</button>`).join('');
+  $('chips').insertAdjacentHTML('beforeend',tagChips());const q=query.toLowerCase();
+  const rows=items.filter(i=>(filter==='all'||(filter==='notes'&&!hasLink(i.text))||(filter==='links'&&hasLink(i.text))||(filter==='pinned'&&i.pin))&&(!tag||tagsOf(i.text).includes(tag))&&(!q||i.text.toLowerCase().includes(q)))
+   .sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||b.at-a.at);
+  $('board').innerHTML=rows.length?columnize(rows):`<div class="empty">${q||tag||filter!=='all'?'Nothing matches. <button class="chip" data-clear>Clear filters</button>':'Nothing here yet. Type above or paste a link.'}</div>`;
+  if(editing){const t=$('board').querySelector('.edit');if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length)}}
+}
+function card(i,n){
+  let body;
+  if(editing===i.id)body=`<textarea class="edit" data-id="${i.id}">${esc(i.text)}</textarea>`;
+  else if(linkOnly(i.text)){const u=i.text.trim(),h=host(u);
+   body=`<a class="lk" href="${full(u)}" target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(h)}&sz=64" alt="" onerror="this.style.visibility='hidden'"><div><h3>${esc(h)}</h3><p>${esc(u)}</p></div></a>`}
+  else body=`<div class="txt${i.text.length>420?' clip':''}${!i.text.includes('\n')&&i.text.length<=180?' ctr':''}">${linkify(i.text)}</div>`;
+  return `<article class="card${editing===i.id?' editing':''}${i.id===fresh?' fresh':''}" data-c="${i.c||0}" data-id="${i.id}" style="--r:${((parseInt(i.id.slice(-3),36)||0)%9-4)*.35}deg;--i:${n}">${i.pin?'<span class="pinbadge">📌</span>':''}${body}
+  <div class="meta"><span>${ago(i.at)}</span><span class="acts">
+   <button data-a="col" title="Change colour"><i class="dotc"></i></button>
+   <button data-a="copy" title="Copy">Copy</button>
+   <button data-a="pin" title="Pin">${i.pin?'Unpin':'Pin'}</button>
+   <button data-a="edit" title="Edit">Edit</button>
+   <button data-a="del" class="x" title="Delete">Delete</button></span></div></article>`;
+}
+function toast(m,fn){$('tm').textContent=m;$('ta').style.display=fn?'':'none';undo=fn||null;$('toast').classList.add('show');clearTimeout(tt);tt=setTimeout(()=>$('toast').classList.remove('show'),4200)}
+function add(t){t=t.trim();if(!t)return false;
+ const lines=t.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+ if(lines.length>1&&lines.every(linkOnly)){let k=0;lines.forEach(l=>{if(!dupe(l)){items.unshift({id:uid(),text:l,pin:0,c:0,at:Date.now()});k++}});save();render();return k?`Saved ${k} links.`:'Those links are already saved.'}
+ const d=linkOnly(t)&&dupe(t);if(d){d.at=Date.now();fresh=d.id;save();render();fresh=null;return 'Already saved. Moved to the top.'}const it={id:uid(),text:t,pin:0,c:0,at:Date.now()};items.unshift(it);fresh=it.id;save();render();fresh=null;return 'Saved.'}
+async function copy(t){try{await navigator.clipboard.writeText(t)}catch{const a=document.createElement('textarea');a.value=t;document.body.append(a);a.select();document.execCommand('copy');a.remove()}toast('Copied.')}
+
+$('add').onclick=()=>{const r=add($('in').value);if(r){$('in').value='';try{localStorage.removeItem(KEY+'.draft')}catch{}size();toast(r)}else toast('Type or paste something first.');$('in').focus()};
+$('in').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();$('add').click()}});
+const size=()=>{const t=$('in');t.style.height='auto';t.style.height=Math.min(t.scrollHeight,220)+'px'};
+$('in').addEventListener('input',()=>{size();try{localStorage.setItem(KEY+'.draft',$('in').value)}catch{}});
+$('pc').onclick=async()=>{try{const t=await navigator.clipboard.readText();const r=add(t);toast(r||'Clipboard is empty.')}catch{toast('Browser blocked clipboard access. Press Ctrl+V on the page instead.')}};
+addEventListener('paste',e=>{const tg=e.target;if(tg.tagName==='TEXTAREA'||tg.tagName==='INPUT'||$('dlg').open)return;const t=e.clipboardData.getData('text');const r=add(t);if(r){e.preventDefault();toast(r)}});
+$('q').addEventListener('input',e=>{query=e.target.value;render()});
+$('chips').onclick=e=>{const b=e.target.closest('[data-f],[data-t]');if(!b)return;if(b.dataset.t){tag=tag===b.dataset.t?'':b.dataset.t}else{filter=b.dataset.f;tag=''}render()};
+$('ta').onclick=()=>{undo&&undo();$('toast').classList.remove('show')};
+
+$('board').addEventListener('click',e=>{
+  const tg=e.target.closest('[data-tag]');if(tg){tag=tg.dataset.tag;render();scrollTo({top:0,behavior:'smooth'});return}
+  if(e.target.closest('[data-clear]')){filter='all';tag='';query='';$('q').value='';render();return}
+  const cl=e.target.closest('.txt.clip');if(cl&&!e.target.closest('a')){cl.classList.toggle('open');return}
+  const b=e.target.closest('[data-a]');if(!b)return;
+  const id=b.closest('.card').dataset.id,it=items.find(x=>x.id===id),a=b.dataset.a;
+  if(a==='copy')copy(it.text);
+  if(a==='pin'){it.pin=it.pin?0:1;save();render()}
+  if(a==='col'){it.c=((it.c||0)+1)%5;save();render()}
+  if(a==='edit'){editing=id;render()}
+  if(a==='del'){const idx=items.indexOf(it);items.splice(idx,1);save();render();toast('Deleted.',()=>{items.splice(idx,0,it);save();render()})}
+});
+function finishEdit(ta,keep){const it=items.find(x=>x.id===ta.dataset.id);editing=null;
+ if(keep&&it&&ta.value.trim()){it.text=ta.value.trim();it.at=Date.now();save()}render()}
+$('board').addEventListener('focusout',e=>{if(e.target.classList.contains('edit')&&editing)finishEdit(e.target,true)});
+$('board').addEventListener('keydown',e=>{if(!e.target.classList.contains('edit'))return;
+ if(e.key==='Escape'){e.target.value='';finishEdit(e.target,false)}
+ if(e.key==='Enter'&&!e.isComposing&&(e.ctrlKey||e.metaKey||!e.shiftKey)){e.preventDefault();finishEdit(e.target,true)}});
+
+addEventListener('keydown',e=>{const typing=/INPUT|TEXTAREA/.test(document.activeElement.tagName);
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('q').focus();return}
+ if(!typing&&!e.ctrlKey&&!e.metaKey&&!e.altKey){if(e.key==='/'){e.preventDefault();$('q').focus()}if(e.key==='?'){e.preventDefault();openDoc('shortcuts')}if(e.key==='n'){e.preventDefault();$('in').focus();scrollTo({top:0,behavior:'smooth'})}}
+ if(e.key==='Escape'&&document.activeElement===$('q')){$('q').value='';query='';render();$('q').blur()}});
+$('bk').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(items,null,1)],{type:'application/json'}));a.download='ud4yxclipboard-backup.json';a.click();URL.revokeObjectURL(a.href)};
+$('rs').onclick=()=>$('file').click();
+$('file').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!Array.isArray(d))throw 0;
+ const have=new Set(items.map(i=>i.id));d.forEach(i=>{if(i&&i.text&&!have.has(i.id))items.push({id:i.id||uid(),text:String(i.text),pin:i.pin?1:0,c:i.c||0,at:i.at||Date.now()})});save();render();toast('Backup restored.')}catch{toast('That file is not a valid backup.')}e.target.value=''};
+const root=document.documentElement,st=localStorage.getItem(KEY+'.tt');if(st)root.dataset.theme=st;
+$('th').onclick=()=>{root.dataset.theme=root.dataset.theme==='day'?'night':'day';try{localStorage.setItem(KEY+'.tt',root.dataset.theme)}catch{}};
+
+const seedIt=()=>{items=[
+ {id:uid(),text:'https://github.com',pin:0,c:0,at:Date.now()-1},
+ {id:uid(),text:'Welcome. Type a short note, paste a link, or hit Ctrl+V anywhere. Links like https://example.com are clickable. Colour, pin, edit or copy any card from the buttons at the bottom.',pin:1,c:1,at:Date.now()}];save()}
+const R=(a,b)=>`<div class="sc"><span>${a}</span><span>${b}</span></div>`;
+const DOCS={
+shortcuts:{t:'Shortcuts',h:`<p class="upd">On a Mac, use Cmd instead of Ctrl.</p>
+<h3>Adding</h3>${R('<kbd>Enter</kbd>','Save the note or link')}${R('<kbd>Shift</kbd> + <kbd>Enter</kbd>','New line')}${R('<kbd>Ctrl</kbd> + <kbd>V</kbd> anywhere on the page','Save the clipboard as a card')}${R('<kbd>n</kbd>','Jump to the new note box')}
+<h3>Finding</h3>${R('<kbd>/</kbd> or <kbd>Ctrl</kbd> + <kbd>K</kbd>','Search')}${R('<kbd>Esc</kbd> in search','Clear the search')}${R('Click a <kbd>#tag</kbd>','Show only that tag')}
+<h3>Editing a card</h3>${R('<kbd>Enter</kbd>','Save the edit')}${R('<kbd>Shift</kbd> + <kbd>Enter</kbd>','New line')}${R('<kbd>Esc</kbd>','Cancel the edit')}${R('Click a long card','Expand or collapse it')}
+<h3>Help</h3>${R('<kbd>?</kbd>','Open this list')}`},
+privacy:{t:'Privacy Policy',h:`<p class="upd">Last updated: 29 September 2026</p>
+<h3>The short version</h3><p>UD4YxCLIPBOARD runs entirely in your browser. There are no accounts, no server database, no analytics and no ads. Your notes and links stay on your device and are never sent to me.</p>
+<h3>What is stored</h3><ul><li>Your cards: text, links, tags, colours and pins.</li><li>An unsent draft in the note box, and your Day / Night choice.</li></ul><p>All of it lives in your browser's local storage on this device. Anyone who can use your browser profile can see it, so please don't save passwords or other sensitive details here.</p>
+<h3>Clipboard</h3><p>The app reads your clipboard only when you press "Paste clipboard" or paste with Ctrl+V. What you paste is saved only on your device.</p>
+<h3>Third-party services</h3><p>The app itself sends nothing to me, but loading the page involves services I don't control:</p><ul><li><b>GitHub Pages</b> hosts the site and may log technical data such as your IP address, under GitHub's own policy.</li><li><b>Google Fonts</b> supplies the typefaces, so Google receives your IP address and browser details when the page loads.</li><li><b>Google's favicon service</b> supplies the small site icons on link cards. The website address of each saved link is sent to Google to fetch its icon.</li></ul>
+<h3>Cookies</h3><p>The app sets no cookies and uses no tracking.</p>
+<h3>Your control</h3><ul><li>Delete any card with its Delete button.</li><li>Erase everything by clearing this site's data in your browser settings.</li><li>Backup files are saved where you choose. Restore reads only the file you pick.</li></ul>
+<h3>Children</h3><p>This app is not aimed at children under 13.</p>
+<h3>Changes and contact</h3><p>If this policy changes, the date above will change too. Questions can be sent through the project's GitHub repository or to UDAY.</p>`},
+terms:{t:'Terms & Conditions',h:`<p class="upd">Last updated: 29 September 2026</p>
+<h3>1. Agreement</h3><p>By using UD4YxCLIPBOARD you agree to these terms. If you don't agree, please don't use the app.</p>
+<h3>2. What this is</h3><p>A free personal tool for keeping short notes and links. It is provided "as is" and "as available", with no promise that it will be error-free, always online, or fit for a particular purpose.</p>
+<h3>3. Your content and backups</h3><p>Your notes belong to you and stay in your browser. They can be lost if you clear browser data, switch devices, run out of storage, or if a bug occurs. You are responsible for keeping backups with the Backup button.</p>
+<h3>4. Acceptable use</h3><ul><li>Use the app lawfully.</li><li>Don't save content you have no right to keep, or that is illegal.</li><li>Don't try to disrupt, copy, or misuse the hosting of the app.</li><li>Don't store passwords, banking, health or other highly sensitive information in it.</li></ul>
+<h3>5. Links</h3><p>Links you save may lead to third-party sites. I don't control them and am not responsible for their content or safety. Open them at your own risk.</p>
+<h3>6. Ownership</h3><p>The design and code of UD4YxCLIPBOARD are © 2026 UDAY. Fonts are used under their open licences.</p>
+<h3>7. Limit of liability</h3><p>To the extent the law allows, UDAY is not liable for any loss of data, or for any indirect or consequential loss, arising from your use of the app.</p>
+<h3>8. Changes</h3><p>These terms may be updated. Continuing to use the app after a change means you accept it.</p>
+<h3>9. Governing law and contact</h3><p>These terms are governed by the laws of India. Questions can be sent through the project's GitHub repository or to UDAY.</p>`}};
+function openDoc(k){const d=DOCS[k];$('dt').textContent=d.t;$('db').innerHTML=d.h;$('dlg').showModal();$('db').scrollTop=0}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-doc]');if(b){e.preventDefault();openDoc(b.dataset.doc)}});
+$('dx').onclick=()=>$('dlg').close();
+$('dlg').addEventListener('click',e=>{if(e.target===$('dlg'))$('dlg').close()});
+try{$('in').value=localStorage.getItem(KEY+'.draft')||''}catch{}size();
+addEventListener('storage',e=>{if(e.key===KEY&&!editing){try{const v=JSON.parse(e.newValue);items=(Array.isArray(v)?v:[]).filter(i=>i&&typeof i.text==='string'&&i.id)}catch{}render()}});
+addEventListener('scroll',()=>$('fab').classList.toggle('show',scrollY>380),{passive:true});
+$('fab').onclick=()=>{scrollTo({top:0,behavior:'smooth'});setTimeout(()=>$('in').focus(),350)};
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(!editing&&natCols()!==lastNat)render()},150)});
+const go=()=>{render();syncState();setTimeout(()=>$('board').classList.remove('boot'),1500)};
+if(items.length)go();else Promise.race([idbGet(),new Promise(r=>setTimeout(()=>r(null),1200))]).then(d=>{if(Array.isArray(d)&&d.length){items=d.filter(i=>i&&typeof i.text==='string'&&i.id);save();toast('Restored your notes.')}else seedIt();go()});setInterval(()=>{if(!editing&&!document.querySelector('.txt.open'))render()},60000);
+</script>
+</body>
+</html>
